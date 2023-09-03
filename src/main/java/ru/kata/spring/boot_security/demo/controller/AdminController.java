@@ -52,19 +52,22 @@ public class AdminController {
 
     @PostMapping("/save")
     public String saveNewUser(@ModelAttribute("user") @Valid User user, Principal principal,
-                              Model model, BindingResult bindingResult) {
+                              Model model, BindingResult bindingResult,
+                              @RequestParam(required = false) String role) {
         model.addAttribute("authUser", userService.getUser(principal.getName()));
         model.addAttribute("roles", roleService.addAllRoles());
         userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors())
             return "admin/new";
-        userService.saveUser(user);
+        userService.saveUser(user, role);
         return REDIRECT;
     }
 
     @PatchMapping("/{username}")
     public String saveUpdatedUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult,
-                                  @PathVariable("username") String username, Model model) {
+                                  @PathVariable("username") String username, Model model,
+                                  @RequestParam(required = false) String role) {
+        System.out.println(username);
         if (!user.getUsername().equals(username)) {
             userValidator.validate(user, bindingResult);
         }
@@ -72,7 +75,7 @@ public class AdminController {
             model.addAttribute("user", userService.getUser(username));
             return REDIRECT;
         }
-        userService.updateUser(username, user);
+        userService.updateUser(user, username, role);
         return REDIRECT;
     }
 

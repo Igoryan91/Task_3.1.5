@@ -14,7 +14,7 @@
             <span class="align-middle">с ролями:</span>
             <span class="align-middle">
                 <th:block th:each="role: ${user.roles}"
-                          th:text="${role.name}">
+                          th:text="${role.name} + ' '">
             </th:block>
             </span></p>
         <form th:action="@{/logout}" method="post">
@@ -73,7 +73,7 @@
                                     <td th:text="${user.yearOfBirth}"></td>
                                     <td>
                                         <th:block th:each="role: ${user.roles}"
-                                                  th:text="${role.name}">
+                                                  th:text="${role.name} + ' '">
                                         </th:block>
                                     </td>
                                     <td>
@@ -140,10 +140,10 @@
                                                         <input th:name="password" type="password"
                                                                class="form-control" id="password1"/>
                                                         <br>
-                                                        <label for="roles1"><b>Роль</b></label>
+                                                        <label for="role"><b>Роль</b></label>
                                                         <select multiple class="form-control form-control-sm"
-                                                                name="roles" id="roles1"
-                                                                th:name="roles" size="2" required>
+                                                                name="role" id="role"
+                                                                th:name="role" size="2" required>
                                                             <option th:each="role : ${roles}"
                                                                     th:value="${role.getId()}">
                                                                 <th:block th:text="${role.name}"/>

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.util.List;
@@ -18,12 +19,13 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final RoleService roleService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder, RoleService roleService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.roleService = roleService;
     }
 
     @Transactional
@@ -38,7 +40,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void saveUser(User user) {
+    public void saveUser(User user, String role) {
+        user.setRoles(roleService.rolesSetIds(role));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
@@ -55,16 +58,15 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void updateUser(String usernameUpdatingUser, User updatedUser){
-        System.out.println(updatedUser.getPassword() == null);
-        if (updatedUser.getPassword().equals("")) {
-            updatedUser
-                    .setPassword(userRepository.findByUsername(usernameUpdatingUser).getPassword());
-        } else {
-            updatedUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+    public void updateUser(User user, String username, String role){
+        user.setRoles(roleService.rolesSetIds(role));
+        if(user.getPassword().equals("") || user.getPassword() == null) {
+            user.setPassword(userRepository.findByUsername(username).getPassword());
+        }else {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-        updatedUser.setId(userRepository.findByUsername(usernameUpdatingUser).getId());
-        userRepository.save(updatedUser);
+        user.setId(userRepository.findByUsername(username).getId());
+        userRepository.update(user);
     }
 
     @Transactional

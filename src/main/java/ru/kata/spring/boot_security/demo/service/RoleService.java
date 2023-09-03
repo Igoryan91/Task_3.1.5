@@ -6,4 +6,8 @@ import java.util.Set;
 
 public interface RoleService {
     Set<Role> addAllRoles();
+
+    Role getById(int id);
+
+    Set<Role> rolesSetIds(String rolesId);
 }
