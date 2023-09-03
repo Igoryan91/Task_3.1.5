@@ -54,6 +54,7 @@ public class AdminController {
     public String saveNewUser(@ModelAttribute("user") @Valid User user, Principal principal,
                               Model model, BindingResult bindingResult) {
         model.addAttribute("authUser", userService.getUser(principal.getName()));
+        model.addAttribute("roles", roleService.addAllRoles());
         userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors())
             return "admin/new";
