@@ -23,6 +23,5 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Set<Role> addAllRoles() {
         return new HashSet<>(repository.findAll());
-
     }
 }
