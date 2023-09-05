@@ -14,6 +14,7 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
     private final SuccessUserHandler successUserHandler;
+    private final String LOGIN = "/login";
 
     @Autowired
     public SecurityConfig(UserService userService, SuccessUserHandler successUserHandler) {
@@ -25,16 +26,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/", "/auth/login").permitAll()
-                .antMatchers("/admin/**").access("hasAnyAuthority('ADMIN')")
+                .antMatchers("/", LOGIN).permitAll()
+                .antMatchers("/admin").access("hasAnyAuthority('ADMIN')")
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().loginPage("/auth/login")
-                .loginProcessingUrl("/process_login")
+                .formLogin().loginPage(LOGIN)
+                .loginProcessingUrl(LOGIN)
                 .successHandler(successUserHandler)
-                .failureUrl("/auth/login?error")
+                .failureUrl("/login?error")
                 .and()
-                .logout().logoutUrl("/logout").logoutSuccessUrl("/");
+                .logout().logoutUrl("/logout").logoutSuccessUrl(LOGIN);
     }
 
     @Bean

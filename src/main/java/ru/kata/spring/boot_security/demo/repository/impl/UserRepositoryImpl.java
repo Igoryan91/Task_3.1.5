@@ -35,6 +35,7 @@ public class UserRepositoryImpl implements UserRepository {
     public void update(User user) {
         entityManager.merge(user);
     }
+
     @Override
     @Transactional
     public void deleteById(int id) {
@@ -47,11 +48,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User findByUsername(String userName) {
+    public User findByUsername(String username) {
         try {
-            return entityManager.createQuery("Select u from User u left join fetch u.roles " +
-                            "where u.username=:userName", User.class)
-                    .setParameter("userName", userName).getSingleResult();
+            return entityManager.createQuery("select u from User u left join fetch u.roles " +
+                            "where u.username=:username", User.class)
+                    .setParameter("username", username).getSingleResult();
         } catch (NoResultException exception) {
             return null;
         }
